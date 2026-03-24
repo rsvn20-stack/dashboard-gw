@@ -26,14 +26,12 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/fi
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
 
-  // kalau belum login & bukan di root → paksa ke login (/)
-  if (!user && path !== "/" && path !== "/index.html") {
+  if (!user && path !== "/") {
     window.location.href = "/";
   }
 
-  // kalau sudah login tapi masih di login page → masuk dashboard
-  if (user && (path === "/" || path === "/index.html")) {
-    window.location.href = "/dashboard.html";
+  if (user && path === "/") {
+    window.location.href = "/dashboard/";
   }
 });
 
@@ -54,7 +52,7 @@ window.login = function () {
 
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
-      window.location.href = "/dashboard.html";
+      window.location.href = "/dashboard/";
     })
     .catch(e => alert(e.message));
 };
