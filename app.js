@@ -31,6 +31,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let isRegister = false;
+let isRegistering = false;
 
 // TOGGLE MODE
 window.toggleMode = function () {
@@ -53,6 +54,9 @@ window.toggleMode = function () {
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
+
+  // 🔥 STOP redirect kalau lagi register
+  if (isRegistering) return;
 
   if (!user && path !== "/") {
     window.location.href = "/";
@@ -84,31 +88,31 @@ window.submitForm = async function () {
   try {
   const btn = document.getElementById("submitBtn");
   btn.disabled = true;
-    if (isRegister) {
-      // ===== REGISTER =====
-      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
-      // SIMPAN DATA USER KE FIRESTORE
-      await addDoc(collection(db, "users"), {
-        uid: userCredential.user.uid,
-        email: email,
-        username: username,
-        createdAt: new Date()
-      });
+if (isRegister) {
+  isRegistering = true; // 🔥 aktifkan flag
 
-      // LOGOUT BIAR GA AUTO LOGIN
-      await signOut(auth);
+  const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
-      // NOTIF
-      alert("Register berhasil, silakan login");
+  await addDoc(collection(db, "users"), {
+    uid: userCredential.user.uid,
+    email: email,
+    username: username,
+    createdAt: new Date()
+  });
 
-      document.getElementById("email").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("username").value = "";
+  await signOut(auth);
 
-      // BALIK KE MODE LOGIN
-      isRegister = false;
-      toggleMode();
+  isRegistering = false; // 🔥 matikan flag
+
+  alert("Register berhasil, silakan login");
+
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("username").value = "";
+
+  isRegister = false;
+  toggleMode();
 
     } else {
       // ===== LOGIN =====
