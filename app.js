@@ -52,14 +52,11 @@ window.toggleMode = function () {
 };
 
 onAuthStateChanged(auth, (user) => {
-  const path = window.location.pathname.replace("index.html", "");
+  const path = window.location.pathname;
 
-  if (!user && path !== "/") {
+  // cuma proteksi halaman dashboard
+  if (!user && path.includes("/dashboard")) {
     window.location.href = "/";
-  }
-
-  if (user && path === "/") {
-    window.location.href = "/dashboard/";
   }
 });
 
