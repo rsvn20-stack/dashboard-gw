@@ -19,6 +19,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+//AUTH CHECK
+
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  const path = window.location.pathname;
+
+  if (!user && !path.includes("login.html")) {
+    window.location.href = "login.html";
+  }
+
+  if (user && path.includes("login.html")) {
+    window.location.href = "index.html";
+  }
+});
+
 // REGISTER
 window.register = function () {
   const email = document.getElementById("email").value;
