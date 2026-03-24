@@ -23,12 +23,13 @@
         <h2>KELVIN TAI</h2>
       </div>
 
-      <!-- FORM -->
-      <input id="email" placeholder="Email">
-      <input id="password" type="password" placeholder="Password">
+    <!-- FORM -->
+    <input id="username" placeholder="Username" style="display:none;">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
 
-      <button onclick="login()">Login</button>
-      <button onclick="register()" class="secondary">Register</button>
+<button onclick="submitForm()" id="submitBtn">Login</button>
+<button onclick="toggleMode()" class="secondary" id="toggleBtn">Register</button>
 
     </div>
 

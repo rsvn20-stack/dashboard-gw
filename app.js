@@ -1,8 +1,19 @@
 // IMPORT FIREBASE
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // CONFIG (GANTI PUNYA LU)
 const firebaseConfig = {
@@ -19,9 +30,26 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+let isRegister = false;
 
-// AUTH CHECK 
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// TOGGLE MODE
+window.toggleMode = function () {
+  isRegister = !isRegister;
+
+  const username = document.getElementById("username");
+  const submitBtn = document.getElementById("submitBtn");
+  const toggleBtn = document.getElementById("toggleBtn");
+
+  if (isRegister) {
+    username.style.display = "block";
+    submitBtn.innerText = "Register";
+    toggleBtn.innerText = "Back to Login";
+  } else {
+    username.style.display = "none";
+    submitBtn.innerText = "Login";
+    toggleBtn.innerText = "Register";
+  }
+};
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
@@ -35,26 +63,52 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// REGISTER
-window.register = function () {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
+// SUBMIT FORM
+window.submitForm = async function () {
+  const email = document.getElementById("email").value.trim();
+  const pass = document.getElementById("password").value.trim();
+  const usernameInput = document.getElementById("username");
+  const username = usernameInput ? usernameInput.value.trim() : "";
 
-  createUserWithEmailAndPassword(auth, email, pass)
-    .then(() => alert("Register berhasil"))
-    .catch(e => alert(e.message));
-};
+  // VALIDASI BASIC
+  if (!email || !pass) {
+    alert("Email & Password wajib diisi");
+    return;
+  }
 
-// LOGIN
-window.login = function () {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
+  if (isRegister && !username) {
+    alert("Username wajib diisi");
+    return;
+  }
 
-  signInWithEmailAndPassword(auth, email, pass)
-    .then(() => {
+  try {
+    if (isRegister) {
+      // REGISTER
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+
+      // SIMPAN DATA USER
+      await addDoc(collection(db, "users"), {
+        uid: userCredential.user.uid,
+        email: email,
+        username: username,
+        createdAt: new Date()
+      });
+
+      // AUTO MASUK DASHBOARD
       window.location.href = "/dashboard/";
-    })
-    .catch(e => alert(e.message));
+
+    } else {
+      // LOGIN
+      await signInWithEmailAndPassword(auth, email, pass);
+
+      // MASUK DASHBOARD
+      window.location.href = "/dashboard/";
+    }
+
+  } catch (e) {
+    console.error(e);
+    alert(e.message);
+  }
 };
 
 // LOGOUT
