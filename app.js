@@ -20,19 +20,20 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-//AUTH CHECK
-
+// AUTH CHECK 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
 
-  if (!user && !path.includes("login.html")) {
-    window.location.href = "login.html";
+  // kalau belum login & bukan di root → paksa ke login (/)
+  if (!user && path !== "/" && path !== "/index.html") {
+    window.location.href = "/";
   }
 
-  if (user && path.includes("login.html")) {
-    window.location.href = "index.html";
+  // kalau sudah login tapi masih di login page → masuk dashboard
+  if (user && (path === "/" || path === "/index.html")) {
+    window.location.href = "/dashboard.html";
   }
 });
 
@@ -53,7 +54,7 @@ window.login = function () {
 
   signInWithEmailAndPassword(auth, email, pass)
     .then(() => {
-      window.location.href = "index.html";
+      window.location.href = "/dashboard.html";
     })
     .catch(e => alert(e.message));
 };
@@ -63,7 +64,7 @@ window.logout = function () {
   signOut(auth)
     .then(() => {
       console.log("Logout berhasil");
-      window.location.href = "login.html";
+      window.location.href = "/";
     })
     .catch(err => {
       console.log(err);
