@@ -63,14 +63,14 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
-// SUBMIT FORM
+// SUBMIT FORM (LOGIN / REGISTER)
 window.submitForm = async function () {
   const email = document.getElementById("email").value.trim();
   const pass = document.getElementById("password").value.trim();
   const usernameInput = document.getElementById("username");
   const username = usernameInput ? usernameInput.value.trim() : "";
 
-  // VALIDASI BASIC
+  // VALIDASI
   if (!email || !pass) {
     alert("Email & Password wajib diisi");
     return;
@@ -82,11 +82,13 @@ window.submitForm = async function () {
   }
 
   try {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
     if (isRegister) {
-      // REGISTER
+      // ===== REGISTER =====
       const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
-      // SIMPAN DATA USER
+      // SIMPAN DATA USER KE FIRESTORE
       await addDoc(collection(db, "users"), {
         uid: userCredential.user.uid,
         email: email,
@@ -94,21 +96,35 @@ window.submitForm = async function () {
         createdAt: new Date()
       });
 
-      // AUTO MASUK DASHBOARD
-      window.location.href = "/dashboard/";
+      // LOGOUT BIAR GA AUTO LOGIN
+      await signOut(auth);
+
+      // NOTIF
+      alert("Register berhasil, silakan login");
+
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("username").value = "";
+
+      // BALIK KE MODE LOGIN
+      isRegister = false;
+      toggleMode();
 
     } else {
-      // LOGIN
+      // ===== LOGIN =====
       await signInWithEmailAndPassword(auth, email, pass);
 
       // MASUK DASHBOARD
       window.location.href = "/dashboard/";
     }
 
-  } catch (e) {
-    console.error(e);
-    alert(e.message);
-  }
+} catch (e) {
+  console.error(e);
+  alert(e.message);
+} finally {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = false;
+}
 };
 
 // LOGOUT
