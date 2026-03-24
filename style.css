@@ -1,28 +1,28 @@
 /* ===============================
-   🔥 LOGIN PAGE BACKGROUND
+   GLOBAL FIX
 =============================== */
-.login-page {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
   font-family: Arial, sans-serif;
-
-  background: url("https://www.upload.ee/image/19186174/san-andreas-desktop.jpg") no-repeat center center;
-  background-size: cover;
-
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
 }
 
 
 /* ===============================
-   📊 DASHBOARD BACKGROUND
+   🔥 LOGIN PAGE BACKGROUND
 =============================== */
-.dashboard-page {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #020617;
-  color: white;
+.login-page {
+  background: url("https://www.upload.ee/image/19186174/san-andreas-desktop.jpg") no-repeat center center;
+  background-size: cover;
+  background-position: center;
+
   min-height: 100vh;
+  min-height: 100dvh;
+
+  position: relative;
+  overflow: hidden;
 }
 
 
@@ -30,11 +30,12 @@
    📦 CONTAINER (CENTER)
 =============================== */
 .login-container {
-  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
 }
 
 
@@ -58,7 +59,7 @@
   overflow: hidden;
 }
 
-/* subtle animated glow line */
+/* scanline */
 .login-box::before {
   content: "";
   position: absolute;
@@ -77,7 +78,7 @@
 
 
 /* ===============================
-   🔤 GTA STYLE TEXT
+   🔤 TEXT
 =============================== */
 .login-box h2 {
   font-family: 'Anton', sans-serif;
@@ -88,13 +89,12 @@
 
   text-shadow:
     0 0 5px rgba(255,140,0,0.6),
-    0 0 15px rgba(255,140,0,0.6),
-    0 0 25px rgba(255,120,0,0.4);
+    0 0 15px rgba(255,140,0,0.6);
 }
 
 
 /* ===============================
-   🖼️ LOGO BULAT
+   🖼️ LOGO
 =============================== */
 .logo {
   width: 80px;
@@ -102,17 +102,13 @@
   object-fit: cover;
   border-radius: 50%;
   border: 3px solid #ff7a00;
-
-  box-shadow:
-    0 0 15px rgba(255,140,0,0.7),
-    inset 0 0 10px rgba(255,140,0,0.4);
-
+  box-shadow: 0 0 15px rgba(255,140,0,0.7);
   margin-bottom: 3px;
 }
 
 
 /* ===============================
-   🧾 INPUT
+   INPUT
 =============================== */
 .login-box input {
   width: 100%;
@@ -120,28 +116,20 @@
   padding: 12px;
   margin-bottom: 12px;
   border-radius: 10px;
-
   border: 1px solid rgba(255,140,0,0.25);
   background: rgba(20, 10, 0, 0.85);
   color: #fff;
-  font-size: 14px;
-
-  transition: 0.2s;
 }
 
 .login-box input:focus {
   outline: none;
   border: 1px solid #ff7a00;
-  background: rgba(30, 15, 0, 0.95);
-
-  box-shadow:
-    0 0 10px rgba(255,140,0,0.6),
-    inset 0 0 5px rgba(255,140,0,0.3);
+  box-shadow: 0 0 10px rgba(255,140,0,0.6);
 }
 
 
 /* ===============================
-   🔘 BUTTON
+   BUTTON
 =============================== */
 .login-box button {
   width: 100%;
@@ -153,56 +141,31 @@
   background: linear-gradient(135deg, #ff7a00, #ffae42);
   color: white;
   font-weight: bold;
-  letter-spacing: 1px;
-
   cursor: pointer;
-  transition: 0.2s;
 
-  box-shadow:
-    0 0 10px rgba(255,140,0,0.5),
-    inset 0 0 5px rgba(255,255,255,0.2);
+  box-shadow: 0 0 10px rgba(255,140,0,0.5);
 }
 
 .login-box button:hover {
-  transform: translateY(-2px) scale(1.02);
-
-  box-shadow:
-    0 0 20px rgba(255,140,0,0.7),
-    0 5px 20px rgba(0,0,0,0.8);
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(255,140,0,0.7);
 }
 
-
-/* REGISTER BUTTON */
 .login-box .secondary {
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(255,140,0,0.3);
+  background: #000;
 }
 
-.login-box .secondary:hover {
-  background: #ff7a00;
-  color: #000;
-
-  box-shadow:
-    0 0 20px rgba(255,140,0,0.7);
-}
 
 /* ===============================
-   🌫️ BACKGROUND SMOKE / PARTICLES
+   🌫️ EFFECT
 =============================== */
-.login-page {
-  position: relative;
-  overflow: hidden;
-}
-
 .login-page::before {
   content: "";
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  z-index: 0;
 }
 
-/* layer asap halus */
 .login-page::after {
   content: "";
   position: absolute;
@@ -211,120 +174,24 @@
   top: -50%;
   left: -50%;
 
-  background: radial-gradient(circle at 30% 30%, rgba(255,140,0,0.08), transparent 40%),
-              radial-gradient(circle at 70% 60%, rgba(255,120,0,0.06), transparent 50%),
-              radial-gradient(circle at 50% 80%, rgba(255,200,100,0.05), transparent 60%);
-
+  background: radial-gradient(circle, rgba(255,140,0,0.08), transparent);
   animation: smokeMove 25s linear infinite;
-  z-index: 0;
 }
 
-/* layer partikel kecil */
 .login-container::before {
   content: "";
   position: absolute;
   inset: 0;
-
   background-image: radial-gradient(#ff7a00 1px, transparent 1px);
   background-size: 30px 30px;
-
-  opacity: 0.25; /* NAikin dikit */
+  opacity: 0.2;
   animation: particleMove 10s linear infinite;
-
-  z-index: 0;
 }
 
-/* animasi asap */
 @keyframes smokeMove {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(5%, -5%) scale(1.1);
-  }
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
+  50% { transform: translate(5%, -5%) scale(1.1); }
 }
 
-/* animasi partikel */
 @keyframes particleMove {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(-40px);
-  }
-}
-
-
-/* pastikan login box di atas efek */
-.login-container,
-.login-box {
-  position: relative;
-  z-index: 1;
-}
-
-
-/* ===============================
-   📊 DASHBOARD
-=============================== */
-.dashboard {
-  padding: 20px;
-}
-
-
-/* TOP BAR */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-
-/* LOGOUT BUTTON */
-.logout-btn {
-  background: red;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-
-/* FORM */
-.form-box {
-  margin-top: 20px;
-}
-
-.form-box input {
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  width: 250px;
-}
-
-.form-box button {
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #22c55e;
-  color: white;
-  cursor: pointer;
-}
-
-
-/* DOMAIN LIST */
-.domain-list {
-  margin-top: 20px;
-  list-style: none;
-  padding: 0;
-}
-
-.domain-list li {
-  background: #1e293b;
-  padding: 12px;
-  margin-bottom: 10px;
-  border-radius: 8px;
+  100% { transform: translateY(-40px); }
 }
