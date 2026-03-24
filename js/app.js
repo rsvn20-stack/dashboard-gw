@@ -1,6 +1,6 @@
 import { auth } from "./firebase.js";
 import { register, login, logoutUser, listenAuth } from "./auth.js";
-import { addDomainToDB, getDomains, addUser } from "./firestore.js";
+import { addDomainToDB, addUser } from "./firestore.js";
 import { setLoading, showMessage } from "./ui.js";
 
 // ======================
@@ -9,6 +9,7 @@ import { setLoading, showMessage } from "./ui.js";
 listenAuth((user) => {
   const path = window.location.pathname;
 
+  // proteksi dashboard
   if (!user && path.includes("dashboard")) {
     window.location.href = "/";
   }
@@ -22,11 +23,14 @@ let isRegister = false;
 window.toggleMode = function () {
   isRegister = !isRegister;
 
-  document.getElementById("username").style.display = isRegister ? "block" : "none";
+  const username = document.getElementById("username");
+  if (username) {
+    username.style.display = isRegister ? "block" : "none";
+  }
 };
 
 // ======================
-// SUBMIT FORM
+// SUBMIT LOGIN / REGISTER
 // ======================
 window.submitForm = async function () {
   const email = document.getElementById("email").value;
@@ -38,6 +42,7 @@ window.submitForm = async function () {
   try {
     setLoading(btn, true);
 
+    // REGISTER
     if (isRegister) {
       const user = await register(email, pass);
 
@@ -49,14 +54,16 @@ window.submitForm = async function () {
 
       await logoutUser();
 
-      showMessage("Register berhasil");
+      showMessage("Register berhasil, silakan login");
       return;
     }
 
+    // LOGIN
     await login(email, pass);
     window.location.href = "/dashboard/";
 
   } catch (e) {
+    console.error(e);
     showMessage(e.message);
   } finally {
     setLoading(btn, false);
@@ -64,49 +71,48 @@ window.submitForm = async function () {
 };
 
 // ======================
-// EVENT LISTENER (INI KUNCI)
+// EVENT LISTENER (FIX UTAMA)
 // ======================
-document.addEventListener("DOMContentLoaded", () => {
 
-  // LOGOUT
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", async () => {
-      try {
-        await logoutUser();
-        window.location.href = "/";
-      } catch (err) {
-        console.error(err);
-        alert("Logout gagal");
-      }
-    });
-  }
+// LOGOUT
+const logoutBtn = document.getElementById("logoutBtn");
 
-  // ADD DOMAIN
-  const addBtn = document.getElementById("addBtn");
-  if (addBtn) {
-    addBtn.addEventListener("click", async () => {
-      const input = document.getElementById("domainInput");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await logoutUser();
+      window.location.href = "/";
+    } catch (err) {
+      console.error(err);
+      alert("Logout gagal");
+    }
+  });
+}
 
-      if (!input.value) {
-        alert("Isi dulu domain");
-        return;
-      }
+// ADD DOMAIN
+const addBtn = document.getElementById("addBtn");
 
-      try {
-        await addDomainToDB({
-          name: input.value,
-          uid: auth.currentUser.uid
-        });
+if (addBtn) {
+  addBtn.addEventListener("click", async () => {
+    const input = document.getElementById("domainInput");
 
-        input.value = "";
-        alert("Domain berhasil ditambahkan");
+    if (!input.value) {
+      alert("Isi dulu domain");
+      return;
+    }
 
-      } catch (err) {
-        console.error(err);
-        alert("Gagal tambah domain");
-      }
-    });
-  }
+    try {
+      await addDomainToDB({
+        name: input.value,
+        uid: auth.currentUser.uid
+      });
 
-});
+      input.value = "";
+      alert("Domain berhasil ditambahkan");
+
+    } catch (err) {
+      console.error(err);
+      alert("Gagal tambah domain");
+    }
+  });
+}
