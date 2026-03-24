@@ -1,31 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dashboard</title>
+
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://www.upload.ee/image/18988533/dtkstudent.png">
+
 </head>
-<body class="dashboard-page">
 
-<div class="dashboard">
+<body class="login-page">
 
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <h2>Dashboard</h2>
-    <button onclick="logout()" class="logout-btn">Logout</button>
+  <div class="login-container">
+
+    <div class="login-box">
+
+      <!-- HEADER -->
+      <div class="login-header">
+        <img src="https://www.upload.ee/image/18988533/dtkstudent.png" class="logo">
+        <h2>KELVIN TAI</h2>
+      </div>
+
+      <!-- FORM -->
+      <input id="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
+
+      <button onclick="login()">Login</button>
+      <button onclick="register()" class="secondary">Register</button>
+
+    </div>
+
   </div>
-
-  <!-- INPUT -->
-  <div class="form-box">
-    <input id="domainInput" placeholder="Tambah domain">
-    <button onclick="addDomain()">Tambah</button>
-  </div>
-
-  <!-- LIST -->
-  <ul id="list" class="domain-list"></ul>
-
-</div>
-
-<script type="module" src="app.js"></script>
 
 </body>
 </html>
