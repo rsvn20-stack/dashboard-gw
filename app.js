@@ -54,9 +54,13 @@ window.toggleMode = function () {
 
 onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
+  const justRegistered = localStorage.getItem("justRegistered");
 
-  // 🔥 STOP redirect kalau lagi register
-  if (isRegistering) return;
+  // 🔥 kalau baru register, jangan redirect
+  if (justRegistered === "true") {
+    localStorage.removeItem("justRegistered");
+    return;
+  }
 
   if (!user && path !== "/") {
     window.location.href = "/";
@@ -90,8 +94,6 @@ window.submitForm = async function () {
   btn.disabled = true;
 
 if (isRegister) {
-  isRegistering = true; // 🔥 aktifkan flag
-
   const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
   await addDoc(collection(db, "users"), {
@@ -101,9 +103,10 @@ if (isRegister) {
     createdAt: new Date()
   });
 
-  await signOut(auth);
+  // 🔥 tandain user baru register
+  localStorage.setItem("justRegistered", "true");
 
-  isRegistering = false; // 🔥 matikan flag
+  await signOut(auth);
 
   alert("Register berhasil, silakan login");
 
