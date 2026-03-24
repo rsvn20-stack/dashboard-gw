@@ -31,7 +31,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let isRegister = false;
-let isRegistering = false;
 
 // TOGGLE MODE
 window.toggleMode = function () {
@@ -53,11 +52,7 @@ window.toggleMode = function () {
 };
 
 onAuthStateChanged(auth, (user) => {
-  const path = window.location.pathname;
-  const justRegistered = localStorage.getItem("justRegistered");
-
-  // 🚫 STOP semua redirect kalau habis register
-  if (justRegistered === "true") return;
+  const path = window.location.pathname.replace("index.html", "");
 
   if (!user && path !== "/") {
     window.location.href = "/";
@@ -75,6 +70,8 @@ window.submitForm = async function () {
   const usernameInput = document.getElementById("username");
   const username = usernameInput ? usernameInput.value.trim() : "";
 
+  const btn = document.getElementById("submitBtn");
+
   // VALIDASI
   if (!email || !pass) {
     alert("Email & Password wajib diisi");
@@ -87,51 +84,52 @@ window.submitForm = async function () {
   }
 
   try {
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = true;
+    btn.disabled = true;
 
-if (isRegister) {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    // =========================
+    // REGISTER
+    // =========================
+    if (isRegister) {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
 
-  await addDoc(collection(db, "users"), {
-    uid: userCredential.user.uid,
-    email: email,
-    username: username,
-    createdAt: new Date()
-  });
+      await addDoc(collection(db, "users"), {
+        uid: userCredential.user.uid,
+        email: email,
+        username: username,
+        createdAt: new Date()
+      });
 
-  // 🚫 tahan redirect
-  localStorage.setItem("justRegistered", "true");
+      // 🔥 WAJIB: logout biar gak auto masuk dashboard
+      await signOut(auth);
 
-  await signOut(auth);
+      alert("Register berhasil, silakan login");
 
-  alert("Register berhasil, silakan login");
+      // reset form
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("username").value = "";
 
-  localStorage.removeItem("justRegistered"); // 🔥 hapus setelah selesai
+      // balik ke mode login
+      isRegister = false;
+      toggleMode();
 
-  document.getElementById("email").value = "";
-  document.getElementById("password").value = "";
-  document.getElementById("username").value = "";
-
-  isRegister = false;
-  toggleMode();
-
-
-    } else {
-      // ===== LOGIN =====
-      await signInWithEmailAndPassword(auth, email, pass);
-
-      // MASUK DASHBOARD
-      window.location.href = "/dashboard/";
+      return; // ⛔ stop disini
     }
 
-} catch (e) {
-  console.error(e);
-  alert(e.message);
-} finally {
-  const btn = document.getElementById("submitBtn");
-  btn.disabled = false;
-}
+    // =========================
+    // LOGIN
+    // =========================
+    await signInWithEmailAndPassword(auth, email, pass);
+
+    // redirect manual
+    window.location.href = "/dashboard/";
+
+  } catch (e) {
+    console.error("AUTH ERROR:", e);
+    alert(e.message);
+  } finally {
+    btn.disabled = false;
+  }
 };
 
 // LOGOUT
@@ -164,12 +162,13 @@ window.addDomain = async function () {
 
     input.value = "";
 
-    await loadDomains(); // 🔥 penting (pakai await)
+    await loadDomains();
 
   } catch (err) {
     console.error("❌ ERROR ADD:", err);
     alert(err.message);
   }
+};
 
 
 // LOAD DOMAIN
