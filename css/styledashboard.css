@@ -1,0 +1,75 @@
+/* ===============================
+   📊 DASHBOARD PAGE
+=============================== */
+.dashboard-page {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #020617;
+  color: white;
+  min-height: 100vh;
+}
+
+/* ===============================
+   CONTAINER
+=============================== */
+.dashboard {
+  padding: 20px;
+}
+
+/* ===============================
+   TOPBAR
+=============================== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LOGOUT BUTTON */
+.logout-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* ===============================
+   FORM
+=============================== */
+.form-box {
+  margin-top: 20px;
+}
+
+.form-box input {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  width: 250px;
+}
+
+.form-box button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #22c55e;
+  color: white;
+  cursor: pointer;
+}
+
+/* ===============================
+   DOMAIN LIST
+=============================== */
+.domain-list {
+  margin-top: 20px;
+  list-style: none;
+  padding: 0;
+}
+
+.domain-list li {
+  background: #1e293b;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
