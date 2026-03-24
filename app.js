@@ -56,11 +56,8 @@ onAuthStateChanged(auth, (user) => {
   const path = window.location.pathname;
   const justRegistered = localStorage.getItem("justRegistered");
 
-  // 🔥 kalau baru register, jangan redirect
-  if (justRegistered === "true") {
-    localStorage.removeItem("justRegistered");
-    return;
-  }
+  // 🚫 STOP semua redirect kalau habis register
+  if (justRegistered === "true") return;
 
   if (!user && path !== "/") {
     window.location.href = "/";
@@ -103,12 +100,14 @@ if (isRegister) {
     createdAt: new Date()
   });
 
-  // 🔥 tandain user baru register
+  // 🚫 tahan redirect
   localStorage.setItem("justRegistered", "true");
 
   await signOut(auth);
 
   alert("Register berhasil, silakan login");
+
+  localStorage.removeItem("justRegistered"); // 🔥 hapus setelah selesai
 
   document.getElementById("email").value = "";
   document.getElementById("password").value = "";
@@ -116,6 +115,7 @@ if (isRegister) {
 
   isRegister = false;
   toggleMode();
+
 
     } else {
       // ===== LOGIN =====
