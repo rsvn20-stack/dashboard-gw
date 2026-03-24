@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html>
 <head>
+    
   <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
 </head>
-<body>
 
-<h2>Login</h2>
+<body class="login-page">
 
-<input id="email" placeholder="Email"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
+  <div class="login-container">
 
-<button onclick="login()">Login</button>
-<button onclick="register()">Register</button>
+    <div class="login-box">
 
-<script type="module" src="app.js"></script>
+      <!-- HEADER -->
+      <div class="login-header">
+        <img src="https://www.upload.ee/image/18988533/dtkstudent.png" class="logo">
+        <h2>KELVIN TAI</h2>
+      </div>
+
+      <!-- FORM -->
+      <input id="email" placeholder="Email">
+      <input id="password" type="password" placeholder="Password">
+
+      <button onclick="login()">Login</button>
+      <button onclick="register()" class="secondary">Register</button>
+
+    </div>
+
+  </div>
 
 </body>
 </html>

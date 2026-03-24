@@ -2,6 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 // CONFIG (GANTI PUNYA LU)
 const firebaseConfig = {
@@ -55,6 +56,18 @@ window.login = function () {
       window.location.href = "index.html";
     })
     .catch(e => alert(e.message));
+};
+
+// LOGOUT
+window.logout = function () {
+  signOut(auth)
+    .then(() => {
+      console.log("Logout berhasil");
+      window.location.href = "login.html";
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 // TAMBAH DOMAIN
