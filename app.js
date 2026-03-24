@@ -148,15 +148,29 @@ window.logout = function () {
 
 // TAMBAH DOMAIN
 window.addDomain = async function () {
-  const input = document.getElementById("domainInput");
+  try {
+    const input = document.getElementById("domainInput");
 
-  await addDoc(collection(db, "domains"), {
-    name: input.value
-  });
+    if (!input.value) {
+      alert("Isi dulu domain");
+      return;
+    }
 
-  input.value = "";
-  loadDomains();
-};
+    await addDoc(collection(db, "domains"), {
+      name: input.value
+    });
+
+    console.log("✅ BERHASIL TAMBAH:", input.value);
+
+    input.value = "";
+
+    await loadDomains(); // 🔥 penting (pakai await)
+
+  } catch (err) {
+    console.error("❌ ERROR ADD:", err);
+    alert(err.message);
+  }
+
 
 // LOAD DOMAIN
 async function loadDomains() {
@@ -168,7 +182,10 @@ async function loadDomains() {
   const querySnapshot = await getDocs(collection(db, "domains"));
 
   querySnapshot.forEach(doc => {
-    list.innerHTML += `<li>${doc.data().name}</li>`;
+    const data = doc.data();
+    console.log("DATA:", data);
+
+    list.innerHTML += `<li>${data.name}</li>`;
   });
 }
 
