@@ -24,23 +24,41 @@ window.toggleMode = function () {
   isRegister = !isRegister;
 
   const username = document.getElementById("username");
+  const btn = document.getElementById("submitBtn");
+  const toggleBtn = document.getElementById("toggleBtn");
+
   if (username) {
     username.style.display = isRegister ? "block" : "none";
   }
+
+  // tombol utama
+  btn.innerText = isRegister ? "Register" : "Login";
+
+  // 🔥 tombol bawah (ini fix utama)
+  toggleBtn.innerText = isRegister
+    ? "Sudah punya akun? Login"
+    : "Belum punya akun? Register";
 };
 
 // ======================
 // SUBMIT LOGIN / REGISTER
 // ======================
 window.submitForm = async function () {
+
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
   const username = document.getElementById("username").value;
 
+  // ✅ VALIDASI TARUH DISINI
+  if (!email || !pass || (isRegister && !username)) {
+    showMessage("Isi semua field dulu");
+    return;
+  }
+
   const btn = document.getElementById("submitBtn");
 
   try {
-    setLoading(btn, true);
+    setLoading(btn, true, isRegister);
 
     // REGISTER
     if (isRegister) {
@@ -54,7 +72,12 @@ window.submitForm = async function () {
 
       await logoutUser();
 
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("username").value = "";
+
       showMessage("Register berhasil, silakan login");
+      toggleMode();
       return;
     }
 
@@ -66,7 +89,7 @@ window.submitForm = async function () {
     console.error(e);
     showMessage(e.message);
   } finally {
-    setLoading(btn, false);
+    setLoading(btn, false, isRegister);
   }
 };
 

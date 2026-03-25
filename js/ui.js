@@ -1,7 +1,12 @@
-export function setLoading(btn, state) {
+export function setLoading(btn, state, isRegister) {
   if (!btn) return;
   btn.disabled = state;
-  btn.innerText = state ? "Loading..." : "Submit";
+
+  if (state) {
+    btn.innerText = "Loading...";
+  } else {
+    btn.innerText = isRegister ? "Register" : "Login";
+  }
 }
 
 export function showMessage(msg) {
