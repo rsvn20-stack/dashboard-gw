@@ -2,7 +2,9 @@ import { db } from "./firebase.js";
 import {
   collection,
   addDoc,
-  getDocs
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 export async function addDomainToDB(data) {
@@ -15,4 +17,17 @@ export async function getDomains() {
 
 export async function addUser(data) {
   return await addDoc(collection(db, "users"), data);
+}
+
+export async function getUserByUsername(username) {
+  const q = query(
+    collection(db, "users"),
+    where("username", "==", username)
+  );
+
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) return null;
+
+  return snapshot.docs[0].data();
 }

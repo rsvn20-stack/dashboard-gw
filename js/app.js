@@ -2,6 +2,7 @@ import { auth } from "./firebase.js";
 import { register, login, logoutUser, listenAuth } from "./auth.js";
 import { addDomainToDB, addUser } from "./firestore.js";
 import { setLoading, showMessage } from "./ui.js";
+import { getUserByUsername } from "./firestore.js";
 
 // ======================
 // AUTH LISTENER
@@ -23,7 +24,7 @@ let isRegister = false;
 window.toggleMode = function () {
   isRegister = !isRegister;
 
-  const username = document.getElementById("username");
+  const emailInput = document.getElementById("email");
   const btn = document.getElementById("submitBtn");
   const toggleBtn = document.getElementById("toggleBtn");
 
@@ -38,6 +39,10 @@ window.toggleMode = function () {
   toggleBtn.innerText = isRegister
     ? "Sudah punya akun? Login"
     : "Belum punya akun? Register";
+
+    emailInput.placeholder = isRegister
+  ? "Email"
+  : "Email / Username";
 };
 
 // ======================
@@ -45,9 +50,9 @@ window.toggleMode = function () {
 // ======================
 window.submitForm = async function () {
 
-  const email = document.getElementById("email").value;
+  let email = document.getElementById("email").value.toLowerCase();
   const pass = document.getElementById("password").value;
-  const username = document.getElementById("username").value;
+  const username = document.getElementById("username").value.toLowerCase().trim();
 
   // ✅ VALIDASI TARUH DISINI
   if (!email || !pass || (isRegister && !username)) {
@@ -64,11 +69,11 @@ window.submitForm = async function () {
     if (isRegister) {
       const user = await register(email, pass);
 
-      await addUser({
-        uid: user.user.uid,
-        email,
-        username
-      });
+await addUser({
+  uid: user.user.uid,
+  email: email.toLowerCase(),
+  username: username.toLowerCase()
+});
 
       await logoutUser();
 
@@ -81,9 +86,24 @@ window.submitForm = async function () {
       return;
     }
 
-    // LOGIN
-    await login(email, pass);
-    window.location.href = "/dashboard/";
+// LOGIN (email / username)
+let loginEmail = email;
+
+// kalau input bukan email → anggap username
+if (!email.includes("@")) {
+  const userData = await getUserByUsername(email);
+
+  if (!userData) {
+    showMessage("Username tidak ditemukan");
+    return;
+  }
+
+  loginEmail = userData.email;
+}
+
+// login pakai email hasil convert
+await login(loginEmail, pass);
+window.location.href = "/dashboard/";
 
   } catch (e) {
     console.error(e);
